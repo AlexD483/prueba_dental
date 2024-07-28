@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+<div class="container" id="container">
+
+    <div class="form-container sign-up-container">
+        <!-- Formulario insertar -->
+        <form action="insertar_cliente.php" id="signUpForm" method="POST">
+            <h1>Crea tu cuenta</h1>
+            <div class="social-container">
+                <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
+                <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+            <input name="nombre" type="text" placeholder="Name" />
+            <input name="email" type="email" placeholder="Email" />
+            <input name="password" type="password" placeholder="Password"/>
+            <input type="submit"> 
+            <!-- <button type="button">Registrarse</button> -->
+        </form>
+    </div>
+    <div class="form-container sign-in-container">
+        <!-- Formulario consultar -->
+        <form action="login 2.php" id="signInForm" method="POST">
+            <h1>Iniciar sesión</h1>
+            <div class="social-container">
+                <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
+                <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+            <input name="email" type="email" id="email" placeholder="Email" required />
+            <input name="password" type="password" id="password" placeholder="Password" required />
+            <a href="ForgotPassword.html" class="ghost">¿Olvidó su contraseña?</a>
+            <input type="submit">
+            <!-- <button type="button" id="loginButton">Iniciar</button> -->
+        </form>
+    </div>
+    <div class="overlay-container">
+        <div class="overlay">
+            <div class="overlay-panel overlay-left">
+                <h1>¡Bienvenido de nuevo!</h1>
+                <p>Para mantenerse conectado con nosotros, inicie sesión con su información personal</p>
+                <button class="ghost" id="signIn">Iniciar sesión</button>
+            </div>
+            <div class="overlay-panel overlay-right">
+                <h1>¡Hola amigo!</h1>
+                <p>Ingrese sus datos personales y comience su viaje con nosotros</p>
+                <button class="ghost" id="signUp">Registrarse</button>
+            </div>
+        </div>
+    </div>
+</div>
+<footer></footer>
+<script>
+    const signUpButton = document.getElementById('signUp');
+    const signInButton = document.getElementById('signIn');
+    const container = document.getElementById('container');
+    const loginButton = document.getElementById('loginButton');
+
+    signUpButton.addEventListener('click', () => {
+        container.classList.add("right-panel-active");
+    });
+
+    signInButton.addEventListener('click', () => {
+        container.classList.remove("right-panel-active");
+    });
+
+    loginButton.addEventListener('click', () => {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        fetch('login.php', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: `email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`
+})
+.then(response => {
+    if (response.ok) {
+        return response.json();
+    }
+    throw new Error('Network response was not ok.');
+})
+.then(data => {
+    if (data.success) {
+        if (data.userType === 'admin') {
+            window.location.href = '/admin-page.html'; // Página del administrador
+        } else {
+            window.location.href = '/user-page.html'; // Página del usuario normal
+        }
+    } else {
+        alert('Usuario o contraseña incorrectos');
+        // Redirigir a la página de inicio de sesión nuevamente u otra acción según tu flujo
+        window.location.href = '/index.html';
+    }
+})
+.catch(error => {
+    console.error('Error:', error);
+});
+
+    });
+</script>
+</body>
+</html>
